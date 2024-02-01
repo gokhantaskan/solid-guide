@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 import type { User } from "@/lib/types";
 
 const users = ref<User[]>([]);

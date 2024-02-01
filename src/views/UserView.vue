@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { toRef, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
+
 import type { User } from "@/lib/types";
 
-const route = useRoute();
-const userId = toRef(() => route.params.id as string);
+const props = defineProps<{
+  id: string;
+}>();
 
+const router = useRouter();
 const user = ref<User>();
 const isLoading = ref(false);
 
 watch(
-  userId,
+  () => props.id,
   async id => {
     isLoading.value = true;
 
     try {
-      user.value = await fetchUser(id as string);
+      user.value = await getUsers(id);
     } catch (error) {
       alert(JSON.stringify(error));
     }
@@ -24,19 +27,31 @@ watch(
   },
   {
     immediate: true,
-    flush: "pre",
   }
 );
 
-async function fetchUser(id: string) {
+async function getUsers(id: string) {
   return await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
     .then(response => response.json())
     .then(json => json);
 }
+
+function closeModal() {
+  router.push({ name: "HomeView" });
+}
 </script>
 
 <template>
-  <div v-if="isLoading">...</div>
-  <div v-else-if="!user">Sh*t happens</div>
-  <div v-else>{{ user }}</div>
+  <VDialog
+    :model-value="true"
+    :close-on-back="false"
+    @click:outside="closeModal"
+    max-width="500"
+  >
+    <VCard>
+      <template #text>
+        {{ isLoading ? "..." : user }}
+      </template>
+    </VCard>
+  </VDialog>
 </template>

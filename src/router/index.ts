@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
@@ -6,13 +7,18 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      redirect: { name: "HomeView" },
+    },
+    {
+      path: "/users",
       name: "HomeView",
       component: HomeView,
       children: [
         {
-          path: "/:id",
+          path: ":id",
           name: "UserView",
-          component: () => import("@/views/UserView.vue"),
+          component: () => import("../views/UserView.vue"),
+          props: true,
         },
       ],
     },
