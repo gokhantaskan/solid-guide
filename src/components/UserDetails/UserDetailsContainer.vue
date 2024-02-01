@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 
 import type { User } from "@/lib/types";
 
@@ -8,21 +8,16 @@ const props = defineProps<{
 }>();
 
 const user = ref<User>();
-const isLoading = ref(false);
 
-(async () => {
-  isLoading.value = true;
-
+onBeforeMount(async () => {
   try {
-    user.value = await getUserDetails(props.id);
+    user.value = await getUser(props.id);
   } catch (error) {
     alert(JSON.stringify(error));
   }
+});
 
-  isLoading.value = false;
-})();
-
-async function getUserDetails(id: string | number) {
+async function getUser(id: string | number) {
   return await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
     .then(response => response.json())
     .then(json => json);
@@ -30,5 +25,5 @@ async function getUserDetails(id: string | number) {
 </script>
 
 <template>
-  <div>{{ user ?? "..." }}</div>
+  <slot :user="user" />
 </template>

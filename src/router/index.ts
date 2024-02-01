@@ -13,14 +13,12 @@ const router = createRouter({
       path: "/users",
       name: "HomeView",
       component: HomeView,
-      children: [
-        {
-          path: ":id",
-          name: "UserView",
-          component: () => import("../views/UserView.vue"),
-          props: true,
-        },
-      ],
+    },
+    {
+      path: "/users/:id",
+      name: "UserView",
+      component: () => import("../views/UserView.vue"),
+      props: true,
     },
   ],
 });
